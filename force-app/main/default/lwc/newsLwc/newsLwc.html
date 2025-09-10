@@ -1,0 +1,50 @@
+<template>
+    <lightning-card title="Top Stories">
+
+        <lightning-map
+            map-markers={mapMarkers}
+            zoom-level="10"
+            center={mapCenter}>
+        </lightning-map>
+        
+        <div class="slds-p-around_medium container">
+            <lightning-combobox
+                name="Category"
+                label="Category"
+                value={selectedValue}
+                options={options}
+                onchange={handleCategoryChange}>
+            </lightning-combobox>
+            <div class="slds-m-top_large">
+                <lightning-button label="Search" onclick={handleSearch} ></lightning-button>
+            </div>
+        </div>
+
+        <div class="slds-p-around_medium container">
+            <template if:true={newsList.length}>
+                <lightning-layout multiple-rows="true" class="slds-p-around_medium">
+                    <template for:each={newsList} for:item="news">
+                        <lightning-layout-item key={news.url} size="12" medium-device-size="6" large-device-size="4" padding="around-small">
+                            <a href={news.url} target="_blank" rel="noopener noreferrer" class="tile-link">
+                            <div class="tile">
+                                <img src='https://cdn.pixabay.com/photo/2017/06/26/19/03/news-2444778_1280.jpg' alt="News Image" class="tile-image"/>
+                                <div class="tile-content">
+                                    <p class="tile-source">{news.author}</p>
+                                    <h3 class="tile-title">{news.title}</h3>
+                                    <p class="tile-subtitle">{news.description}</p>
+                                </div>
+                            </div>
+                            </a>
+                        </lightning-layout-item>
+                    </template>
+                </lightning-layout>
+            </template>
+
+            <template if:false={newsList.length}>
+                <p class="slds-text-color_weak slds-p-around_small">No news available, Select Category!!</p>
+            </template>
+
+        </div>
+    </lightning-card>
+</template>
+

@@ -1,0 +1,69 @@
+<template>
+    <lightning-card>
+        <p class="slds-align_absolute-center slds-text-heading_large"><b>Contact Record Management...</b></p>
+        <div class="slds-p-around_medium slds-text-align_right">
+            <lightning-button label="New Contact" onclick={handleNewContactButton} class="slds-m-right_medium"></lightning-button>
+            <lightning-button label="Delete" onclick={handleDelete} variant="destructive"></lightning-button>
+        </div>
+        <template if:true = {openModal}>
+            
+            <!-- Modal Dialog -->
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+
+                <!-- modal Header -->
+                <header class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">New Record Form</h2>
+                    <lightning-button-icon 
+                        icon-name="utility:close"
+                        class="slds-modal__close"
+                        onclick={handleCloseModal}
+                        alternative-text="Close">
+                    </lightning-button-icon>
+                </header>
+
+                <!-- modal Body -->
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-input label="First Name" value={Contact.FirstName} onchange={handleFirstName}></lightning-input>
+                    <lightning-input label="Last Name" value={Contact.LastName} required onchange={handleLastName}></lightning-input>
+                    <lightning-input label="Title" value={Contact.Title} onchange={handleTitle}></lightning-input>
+                    <lightning-input label="Email" value={Contact.Email} onchange={handleEmail} type="email"></lightning-input>
+                    <lightning-record-edit-form object-api-name="Contact">
+                        <lightning-input-field field-name="AccountId" value={Contact.AccountId} onchange={handleAccountId} data-id="AccountId"></lightning-input-field>
+                    </lightning-record-edit-form>
+                </div>
+
+                <!-- modal Footer -->
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancel" onclick={handleCloseModal} class="slds-m-right_medium"></lightning-button>
+                    <lightning-button label="Create" variant="brand" onclick={handleCreate}></lightning-button>
+                </footer>
+
+                </div>
+            </section>
+
+            <!-- Backdrop -->
+            <div class="slds-backdrop slds-backdrop_open"></div>
+
+        </template>
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+        <div>
+            <lightning-datatable
+                                key-field = 'Id'
+                                data = {paginatedData}
+                                columns = {columns}
+                                draft-values={draftValues}
+                                onsave={handleSave}
+                                onrowselection={handleRowSelection}
+                                onrowaction={handleOnRowAction}>
+            </lightning-datatable>
+            <div class="slds-align_absolute-center slds-m-top_medium">
+                <lightning-button label="Previous" onclick={handlePrevious} disabled={isPreviousDisabled}></lightning-button>
+                <span class="slds-m-horizontal_medium">Page {currentPage} of {totalPages}</span>
+                <lightning-button label="Next" onclick={handleNext} disabled={isNextDisabled}></lightning-button>
+            </div>
+        </div>
+    </lightning-card>
+</template>

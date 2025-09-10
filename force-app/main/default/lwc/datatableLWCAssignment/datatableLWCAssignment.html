@@ -1,0 +1,104 @@
+<template>
+    <lightning-card title="Dynamic Object List View">
+        <div class="slds-grid slds-gutters slds-p-around_medium">
+            <div style="width: 30%" class="slds-col">
+                <lightning-combobox
+                    label="Select Object"
+                    value={selectedObject}
+                    placeholder="Choose an object"
+                    options={sObjectOptions}
+                    onchange={handleObjectChange}>
+                </lightning-combobox>
+            </div>
+            <div class="slds-p-around_medium slds-text-align_right slds-col">
+                <lightning-button label="Choose Fields" onclick={handleFieldButton} disabled={isFieldDisabled} class="slds-m-right_medium"></lightning-button>
+            </div>
+        </div>
+
+
+        
+        <template if:true = {openModal}>
+            
+            <!-- Modal Dialog -->
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+
+                <!-- modal Header -->
+                <header class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">Choose Fields to Show</h2>
+                    <lightning-button-icon 
+                        icon-name="utility:close"
+                        class="slds-modal__close"
+                        onclick={handleCloseModal}
+                        alternative-text="Close">
+                    </lightning-button-icon>
+                </header>
+
+                <!-- modal Body -->
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-dual-listbox
+                        name="Fields"
+                        label="Select Fields to show"
+                        source-label="Available"
+                        selected-label="Selected"
+                        field-level-help="Select one or more fields"
+                        options={dualOptions}
+                        value={dualSelectedValues}
+                        onchange={handleDualChange}>
+                    </lightning-dual-listbox>
+                </div>
+
+                <!-- modal Footer -->
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancel" onclick={handleCloseModal} class="slds-m-right_medium"></lightning-button>
+                    <lightning-button label="Choose" variant="brand" onclick={handleFieldChoice} disabled={isChoiceDisabled}></lightning-button>
+                </footer>
+
+                </div>
+            </section>
+
+            <!-- Backdrop -->
+            <div class="slds-backdrop slds-backdrop_open"></div>
+
+        </template>
+
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+
+        <template if:true={records.length}>
+            <div style="height: 450px;">
+                <lightning-datatable
+                    key-field="Id"
+                    data={showRecords}
+                    columns={columns}
+                    onsave={handleSave}
+                    draft-values={draftValues}
+                    onloadmore={handleLoadMore}
+                    show-row-number-column
+                    enable-infinite-loading>
+                </lightning-datatable>
+            </div>
+        </template>
+
+        <template if:true={noRecord}>
+            <p class="slds-align_absolute-center slds-text-heading_small" >No Records.</p>
+        </template>
+
+    </lightning-card>
+</template>
+
+<!--
+onloadmore={loadMoreData}
+enable-infinite-loading
+hide-checkbox-column
+show-row-number-column 
+-->
+
+
+
+
+
+
+
+
