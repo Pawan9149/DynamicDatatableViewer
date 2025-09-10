@@ -2,6 +2,7 @@ public with sharing class datatableAssignmentController {
     
     @AuraEnabled(cacheable=true)
     public static List<Map<String, String>> getObjectList(){
+        //New comment
 
         List<Map<String, String>> SObjectList = new List<Map<String, String>>();
 
