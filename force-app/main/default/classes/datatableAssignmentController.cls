@@ -34,7 +34,6 @@ public with sharing class datatableAssignmentController {
             for (String fieldName : fieldMap.keySet()) {
                 Map<String, String> fields = new Map<String, String>();
                 Schema.DescribeFieldResult describeField = fieldMap.get(fieldName).getDescribe();
-                //fields.put(fieldName, describeField.getLabel());
                 if(describeField.isAccessible()){
                     Boolean editable = describeField.isUpdateable();
                     String permission = editable ? 'true' : 'false';
