@@ -3,6 +3,7 @@ public with sharing class datatableAssignmentController {
     @AuraEnabled(cacheable=true)
     public static List<Map<String, String>> getObjectList(){
         //New comment
+        // One more
 
         List<Map<String, String>> SObjectList = new List<Map<String, String>>();
 
