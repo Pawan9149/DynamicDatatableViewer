@@ -44,7 +44,7 @@ public with sharing class datatableAssignmentController {
                 }
             }
         }
-        System.debug('FieldsList: ' + fieldList);
+
 
         return fieldList;
 
