@@ -53,11 +53,21 @@ public with sharing class datatableAssignmentController {
     }
 
     @AuraEnabled
-    public static List<SObject> getRecords(String objectApiName, String Fields){
+    public static List<SObject> getRecords(String objectApiName, String Fields, String CurrentId){
 
         List<SObject> objRecords = new List<SObject>();
 
-        String Query = 'Select ' + Fields + ' From ' +  objectApiName + ' WITH USER_MODE';
+        String Query = '';
+
+        if(CurrentId == ''){
+            Query = 'Select ' + Fields + ' From ' +  objectApiName + ' ORDER BY Id LIMIT 50';
+            System.debug('Query: ' + Query);
+        }
+        else{
+            Query = 'Select ' + Fields + ' From ' +  objectApiName + ' WHERE Id > \'' + CurrentId + '\'' + ' ORDER BY Id LIMIT 50';
+            System.debug('Query: ' + Query);
+        }
+
 
         objRecords = Database.query(Query);
         System.debug('Result: ' + objRecords);

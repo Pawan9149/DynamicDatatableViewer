@@ -19,6 +19,9 @@ export default class DynamicObjectListView extends LightningElement {
     openModal = false;
     fieldsString = '';
     isLoading = false;
+    currentId = '';
+    loadingMore = false;
+    isLastRecord = false;
 
 
     @wire(getObjectList)
@@ -47,22 +50,29 @@ export default class DynamicObjectListView extends LightningElement {
     }
 
     handleLoadMore() {
-        console.log('handleLoadMore called');
-        this.isLoading = true;
-        this.showRecords = this.records.slice(0, this.showRecords.length + 20);
-        this.isLoading = false;
+        if (this.loadingMore || this.isLastRecord) {
+            return; 
+        }
+        // this.isLoading = true;
+        this.getRecords();
+        // this.isLoading = false;
     }
 
     handleObjectChange(event){
         this.selectedObject = event.detail.value;
         this.dualSelectedValues = [];
+        this.currentId = '';
+        this.isLastRecord = false;
         this.records = [];
         this.handleFields();
     }
 
     handleDualChange(event){
         this.dualSelectedValues = event.detail.value;
-        console.log('Selected Values: ' + this.dualSelectedValues);
+        this.currentId = '';
+        this.isLastRecord = false;
+        this.records = [];
+        // console.log('Selected Values: ' + this.dualSelectedValues);
     }
 
     showToastMessage(title, message, variant) {
@@ -105,7 +115,7 @@ export default class DynamicObjectListView extends LightningElement {
         );
 
         this.columns = selectedFieldObjects.map(field => {
-            console.log('Mapping label: ' + field.label + ' value: ' + field.value + ' Updateable: ' + field.updateable);
+            // console.log('Mapping label: ' + field.label + ' value: ' + field.value + ' Updateable: ' + field.updateable);
             return {
                 label: field.label,       
                 fieldName: field.value,
@@ -118,21 +128,27 @@ export default class DynamicObjectListView extends LightningElement {
     }
 
     getRecords(){
-        console.log('In getRecords');
-        this.records = [];
+        if (this.loadingMore) {
+            return; // Already fetching, prevent re-entry
+        }
+        this.loadingMore = true;
         this.isLoading = true;
-        getRecords({objectApiName : this.selectedObject, Fields : this.fieldsString})
+        getRecords({objectApiName : this.selectedObject, Fields : this.fieldsString, CurrentId : this.currentId})
         .then(result => {
-            console.log(result);
-            this.records = result;
-            this.showRecords = this.records.slice(0, 20);
-            console.log(this.records);
+            if(result.length > 0){
+                this.records = [...this.records, ...result];
+                this.currentId = result[result.length - 1].Id;
+                if(result.length < 50 && result.length > 0){
+                    this.isLastRecord = true;
+                }
+            }
         })
         .catch(error => {
-            console.log(error);
+            this.showToastMessage('Error Getting Records', error.body.message, 'error');
         })
         .finally(() => {
             this.isLoading = false;
+            this.loadingMore = false;
         })
 
     }

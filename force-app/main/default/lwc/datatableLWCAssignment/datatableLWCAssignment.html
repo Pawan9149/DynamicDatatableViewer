@@ -70,13 +70,14 @@
             <div style="height: 450px;">
                 <lightning-datatable
                     key-field="Id"
-                    data={showRecords}
+                    data={records}
                     columns={columns}
                     onsave={handleSave}
                     draft-values={draftValues}
                     onloadmore={handleLoadMore}
                     show-row-number-column
-                    enable-infinite-loading>
+                    enable-infinite-loading
+                    is-loading={loadingMore}>
                 </lightning-datatable>
             </div>
         </template>
