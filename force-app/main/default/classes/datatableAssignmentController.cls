@@ -61,8 +61,9 @@ public with sharing class datatableAssignmentController {
 
         objRecords = Database.query(Query);
         System.debug('Result: ' + objRecords);
+        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, objRecords);
 
-        return objRecords;
+        return securityDecision.getRecords();
 
     }
 
