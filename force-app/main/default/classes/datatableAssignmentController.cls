@@ -57,10 +57,12 @@ public with sharing class datatableAssignmentController {
 
         List<SObject> objRecords = new List<SObject>();
 
-        String Query = 'Select ' + Fields + ' From ' +  objectApiName;
+        String Query = 'Select ' + Fields + ' From ' +  objectApiName + ' WITH USER_MODE';
 
         objRecords = Database.query(Query);
         System.debug('Result: ' + objRecords);
+
+        // This enforces the FLS and restricts the records of the field that are not accessible to the current user
         SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, objRecords);
 
         return securityDecision.getRecords();
