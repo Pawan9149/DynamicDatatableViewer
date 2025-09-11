@@ -10,7 +10,7 @@ public with sharing class datatableAssignmentController {
         for(Schema.SObjectType objType : Schema.getGlobalDescribe().Values()){
             Schema.DescribeSObjectResult describeObj = objType.getDescribe();
 
-            if (!objType.getDescribe().isCustomSetting() && objType.getDescribe().isQueryable() && !objType.getDescribe().isDeprecatedAndHidden()) {
+            if (!describeObj.isCustomSetting() && describeObj.isQueryable() && describeObj.isAccessible() && !describeObj.isDeprecatedAndHidden()) {
                 Map<String, String> objInfo = new Map<String, String>();
                 objInfo.put('label', describeObj.getLabel());  
                 objInfo.put('value', describeObj.getName());    
