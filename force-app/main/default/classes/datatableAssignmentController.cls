@@ -98,8 +98,7 @@ public with sharing class datatableAssignmentController {
 
         if(!errList.isEmpty()){
             System.debug('ErrList: ' + errList);
-            // return errList.toString();
-            return 'error updating records';
+            return errList.toString();
         }
         else{
             return 'Success';
