@@ -28,27 +28,30 @@ public with sharing class datatableAssignmentController {
 
         List<Map<String, String>> fieldList = new List<Map<String, String>>();
 
-        Schema.SObjectType sObjectType = Schema.getGlobalDescribe().get(objectApiName);
+        try{
+            Schema.SObjectType sObjectType = Schema.getGlobalDescribe().get(objectApiName);
 
-        if (sObjectType != null) {
-            Map<String, Schema.SObjectField> fieldMap = sObjectType.getDescribe().fields.getMap();
-
-            for (String fieldName : fieldMap.keySet()) {
-                Map<String, String> fields = new Map<String, String>();
-                Schema.DescribeFieldResult describeField = fieldMap.get(fieldName).getDescribe();
-                if(describeField.isAccessible()){
-                    Boolean editable = describeField.isUpdateable();
-                    String permission = editable ? 'true' : 'false';
-                    fields.put('label', describeField.getLabel());
-                    fields.put('value', describeField.getName());
-                    fields.put('updateable', permission);
-                    fieldList.add(fields);
+            // if (sObjectType != null) {
+                Map<String, Schema.SObjectField> fieldMap = sObjectType.getDescribe().fields.getMap();
+    
+                for (String fieldName : fieldMap.keySet()) {
+                    Map<String, String> fields = new Map<String, String>();
+                    Schema.DescribeFieldResult describeField = fieldMap.get(fieldName).getDescribe();
+                    if(describeField.isAccessible()){
+                        Boolean editable = describeField.isUpdateable();
+                        String permission = editable ? 'true' : 'false';
+                        fields.put('label', describeField.getLabel());
+                        fields.put('value', describeField.getName());
+                        fields.put('updateable', permission);
+                        fieldList.add(fields);
+                    }
                 }
-            }
+            // }
+            return fieldList;
         }
-
-
-        return fieldList;
+        catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
 
     }
 
@@ -68,14 +71,18 @@ public with sharing class datatableAssignmentController {
             System.debug('Query: ' + Query);
         }
 
-
-        objRecords = Database.query(Query);
-        System.debug('Result: ' + objRecords);
-
-        // This enforces the FLS and restricts the records of the field that are not accessible to the current user
-        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, objRecords);
-
-        return securityDecision.getRecords();
+        try{
+            objRecords = Database.query(Query);
+            System.debug('Result: ' + objRecords);
+    
+            // This enforces the FLS and restricts the records of the field that are not accessible to the current user
+            SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, objRecords);
+    
+            return securityDecision.getRecords();
+        }
+        catch(Exception e){
+            return null;
+        }
 
     }
 
@@ -91,7 +98,8 @@ public with sharing class datatableAssignmentController {
 
         if(!errList.isEmpty()){
             System.debug('ErrList: ' + errList);
-            return errList.toString();
+            // return errList.toString();
+            return 'error updating records';
         }
         else{
             return 'Success';
