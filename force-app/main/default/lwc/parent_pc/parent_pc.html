@@ -1,9 +1,0 @@
-<template>
-    <lightning-card title="Parent To Child AND Child To Parent">
-        <p>=> {childData}</p> 
-        <br/>
-        <c-child_pc parent-data={data} onsendbackthedata={handleChildData}></c-child_pc>
-        <br/>
-        <c-child1_pc prev-child-data={childData}></c-child1_pc>
-    </lightning-card>
-</template>
